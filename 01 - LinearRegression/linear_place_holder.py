@@ -31,10 +31,10 @@ sess = tf.Session()
 sess.run(init)
 
 # fit the line
-for step in xrange(2001):
+for step in range(2001):
     sess.run(train, feed_dict={X: x_data, Y: y_data})
     if step % 20 == 0:
-        print step, sess.run(cost, feed_dict={X: x_data, Y: y_data}), sess.run(W), sess.run(b)
+        print(step, sess.run(cost, feed_dict={X: x_data, Y: y_data}), sess.run(W), sess.run(b))
 
-print sess.run(hypothesis, feed_dict={X: 5})
-print sess.run(hypothesis, feed_dict={X: 2.5})
+print(sess.run(hypothesis, feed_dict={X: 5}))
+print(sess.run(hypothesis, feed_dict={X: 2.5}))
