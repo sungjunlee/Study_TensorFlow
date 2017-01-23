@@ -61,7 +61,7 @@ predict_op = tf.argmax(py_x, 1)
 # Launch the graph in a session
 with tf.Session() as sess:
 
-    tf.initialize_all_variables().run()
+    tf.global_variables_initializer().run()
 
     for i in range(100):
         training_batch = zip(range(0, len(trX), batch_size),

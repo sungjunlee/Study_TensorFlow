@@ -22,7 +22,7 @@ descent = W - tf.mul(0.1, tf.reduce_mean(tf.mul((tf.mul(W, X) - Y), X), ))
 update = W.assign(descent)
 
 # before starting, initialize the variables
-init = tf.initialize_all_variables()
+init = tf.global_variables_initializer()
 
 # launch
 sess = tf.Session()

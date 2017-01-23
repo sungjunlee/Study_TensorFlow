@@ -56,7 +56,7 @@ b2_hist = tf.histogram_summary("biases2", b2)
 
 y_hist = tf.histogram_summary("y", Y)
 
-init = tf.initialize_all_variables()
+init = tf.global_variables_initializer()
 
 with tf.Session() as sess:
     sess.run(init)
