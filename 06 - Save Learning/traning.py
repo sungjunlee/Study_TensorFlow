@@ -1,14 +1,16 @@
 import tensorflow as tf
 import input_data
 
-def xaver_init(n_inputs, n_outputs, uniform = True):
+
+def xaver_init(n_inputs, n_outputs, uniform=True):
     if uniform:
-        init_range = tf.sqrt(6.0/ (n_inputs + n_outputs))
+        init_range = tf.sqrt(6.0 / (n_inputs + n_outputs))
         return tf.random_uniform_initializer(-init_range, init_range)
 
     else:
         stddev = tf.sqrt(3.0 / (n_inputs + n_outputs))
         return tf.truncated_normal_initializer(stddev=stddev)
+
 
 learning_rate = 0.01
 training_epochs = 5
@@ -35,13 +37,12 @@ L1 = tf.nn.relu(tf.add(tf.matmul(x, W1), b1))  # Softmax
 L2 = tf.nn.relu(tf.add(tf.matmul(L1, W2), b2))  # Softmax
 activation = tf.add(tf.matmul(L2, W3), b3)  # Softmax
 
-
 # Minimize error using cross entropy
 cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(activation, y))
 optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(cost)  # Gradient Descent
 
 # Initializing the variables
-init = tf.initialize_all_variables()
+init = tf.global_variables_initializer()
 
 mnist = input_data.read_data_sets("MNIST_data/", one_hot=True)
 checkpoint_dir = "cps/"
@@ -53,7 +54,7 @@ with tf.Session() as sess:
 
     ckpt = tf.train.get_checkpoint_state(checkpoint_dir)
     if ckpt and ckpt.model_checkpoint_path:
-        print ('load learning')
+        print('load learning')
         saver.restore(sess, ckpt.model_checkpoint_path)
 
     # Training cycle
@@ -70,17 +71,16 @@ with tf.Session() as sess:
         # Display logs per epoch step
 
         avg_cost += sess.run(cost, feed_dict={x: batch_xs, y: batch_ys}) / total_batch
-        if epoch % display_step == 0: # Softmax
-            print ("Epoch:", '%04d' % (epoch + 1), "cost=", "{:.9f}".format(avg_cost))
-            print (sess.run(b3))
+        if epoch % display_step == 0:  # Softmax
+            print("Epoch:", '%04d' % (epoch + 1), "cost=", "{:.9f}".format(avg_cost))
+            print(sess.run(b3))
 
-    print ("Optimization Finished!")
+    print("Optimization Finished!")
 
     # Test model
     correct_prediction = tf.equal(tf.argmax(activation, 1), tf.argmax(y, 1))
     # Calculate accuracy
     accuracy = tf.reduce_mean(tf.cast(correct_prediction, "float"))
-    print ("Accuracy:", accuracy.eval({x: mnist.test.images, y: mnist.test.labels}))
+    print("Accuracy:", accuracy.eval({x: mnist.test.images, y: mnist.test.labels}))
 
     saver.save(sess, checkpoint_dir + 'model.ckpt')
-
