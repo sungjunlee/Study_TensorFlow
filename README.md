@@ -5,7 +5,9 @@
 파이선 3 기준입니다.
 
 ## 개발환경
-macOS 10.11, 파이선 3.5.x, TensorFlow 0.9 cpu only
+- Ubuntu 16.04
+- Python 3.5.2
+- TensorFlow 0.12.1
 
 ### 실습목록
 
