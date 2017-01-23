@@ -1,13 +1,12 @@
 import tensorflow as tf
 import numpy as np
 
-
 xy = np.loadtxt('07train.txt', unpack=True)
 x_data = np.transpose(xy[0:-1])
 y_data = np.reshape(xy[-1], (4, 1))
 
-print x_data
-print y_data
+print(x_data)
+print(y_data)
 
 X = tf.placeholder(tf.float32, name='x-input')
 Y = tf.placeholder(tf.float32, name='y-input')
@@ -40,39 +39,39 @@ L8 = tf.nn.relu(tf.matmul(L7, w7) + b7)
 hypothesis = tf.sigmoid(tf.matmul(L8, w8) + b8)
 
 with tf.name_scope('cost') as scope:
-    cost = -tf.reduce_mean(Y * tf.log(hypothesis) + (1-Y) * tf.log(1 - hypothesis))
-    cost_summ = tf.scalar_summary("cost", cost)
+    cost = -tf.reduce_mean(Y * tf.log(hypothesis) + (1 - Y) * tf.log(1 - hypothesis))
+    cost_summ = tf.summary.scalar("cost", cost)
 
 with tf.name_scope('train') as scope:
     a = tf.Variable(0.1)
     optimizer = tf.train.GradientDescentOptimizer(a)
     train = optimizer.minimize(cost)
 
-w1_hist = tf.histogram_summary("weights1", w1)
-w2_hist = tf.histogram_summary("weights2", w2)
+w1_hist = tf.summary.histogram("weights1", w1)
+w2_hist = tf.summary.histogram("weights2", w2)
 
-b1_hist = tf.histogram_summary("biases1", b1)
-b2_hist = tf.histogram_summary("biases2", b2)
+b1_hist = tf.summary.histogram("biases1", b1)
+b2_hist = tf.summary.histogram("biases2", b2)
 
-y_hist = tf.histogram_summary("y", Y)
+y_hist = tf.summary.histogram("y", Y)
 
 init = tf.global_variables_initializer()
 
 with tf.Session() as sess:
     sess.run(init)
 
-    merged = tf.merge_all_summaries()
-    writer = tf.train.SummaryWriter("./logs/xor_logs", sess.graph)
+    merged = tf.summary.merge_all()
+    writer = tf.summary.FileWriter("./logs/xor_logs", sess.graph)
 
-    for step in xrange(20000):
+    for step in range(20000):
         sess.run(train, feed_dict={X: x_data, Y: y_data})
         if step % 200 == 0:
             summary = sess.run(merged, feed_dict={X: x_data, Y: y_data})
             writer.add_summary(summary, step)
-            print step, sess.run(cost, feed_dict={X: x_data, Y: y_data}), sess.run(w1), sess.run(w2)
+            print(step, sess.run(cost, feed_dict={X: x_data, Y: y_data}), sess.run(w1), sess.run(w2))
 
-    correct_prediction = tf.equal(tf.floor(hypothesis+0.5), Y)
+    correct_prediction = tf.equal(tf.floor(hypothesis + 0.5), Y)
 
     accuracy = tf.reduce_mean(tf.cast(correct_prediction, "float"))
-    print sess.run([hypothesis, tf.floor(hypothesis+0.5), correct_prediction], feed_dict={X: x_data, Y: y_data})
-    print "accuracy", accuracy.eval({X: x_data, Y: y_data})
+    print(sess.run([hypothesis, tf.floor(hypothesis + 0.5), correct_prediction], feed_dict={X: x_data, Y: y_data}))
+    print("accuracy", accuracy.eval({X: x_data, Y: y_data}))
