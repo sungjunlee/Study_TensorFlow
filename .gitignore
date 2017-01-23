@@ -1,3 +1,5 @@
 *.png
 *.gz
 !test_2.png
+__pycache__
+logs
